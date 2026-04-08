@@ -12,8 +12,8 @@ class BloodinventoryController extends Controller
      */
     public function index()
     {
-        $Bloods = inventory::latest()->get();
-        return view('inventory', compact('bloods'));
+        $bloods = bloodinventory::latest()->get();
+        return view('show', compact('bloods'));
     }
 
     /**
@@ -21,7 +21,7 @@ class BloodinventoryController extends Controller
      */
     public function create()
     {
-        return view('/create');
+        return view('create');
     }
 
     /**
@@ -30,18 +30,15 @@ class BloodinventoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'blood_type' => 'required|in:A+, A-, B+, B-, O+, O-, AB+, AB-',
+            'blood_type' => 'required|in:A+,A-,B+,B-,O+,O-,AB+,AB-',
             'status' => 'required',
             'expiry_date' => 'required|date',
             'collection_date' => 'required|date'
+        ]);
 
-            
+        bloodinventory::create($validated);
 
-    ]);
-
-            bloodinventory::create($validated);
-
-            return redirect() -> route('inventory.index') -> with('success', 'Added successfully!');
+        return redirect()->route('inventory.index')->with('success', 'Added successfully!');
     }
 
     /**
@@ -49,7 +46,10 @@ class BloodinventoryController extends Controller
      */
     public function show(bloodinventory $bloodinventory)
     {
-        
+        if (!$bloodinventory) {
+        return view('show'); 
+    }
+        return view('show', compact('bloodinventory'));
     }
 
     /**
@@ -57,7 +57,7 @@ class BloodinventoryController extends Controller
      */
     public function edit(bloodinventory $bloodinventory)
     {
-        return view('/edit');
+        return view('edit', compact('bloodinventory'));
     }
 
     /**
@@ -65,7 +65,16 @@ class BloodinventoryController extends Controller
      */
     public function update(Request $request, bloodinventory $bloodinventory)
     {
-        return view ('/update');
+        $validated = $request->validate([
+            'blood_type' => 'required|in:A+,A-,B+,B-,O+,O-,AB+,AB-',
+            'status' => 'required',
+            'expiry_date' => 'required|date',
+            'collection_date' => 'required|date'
+        ]);
+
+        $bloodinventory->update($validated);
+
+        return redirect()->route('inventory.index')->with('success', 'Updated successfully!');
     }
 
     /**

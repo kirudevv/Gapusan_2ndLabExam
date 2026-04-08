@@ -10,7 +10,7 @@ class bloodinventory extends Model
         'blood_type',
         'status',
         'expiry_date',
-        'collection date'
+        'collection_date'
     ];
 
     protected $casts = [
